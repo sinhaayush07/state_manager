@@ -1,5 +1,5 @@
 # State Manager
-
+A simple light weight javaScript library for State Management.
 ## How to use
 
 - Just clone or copy paste, totally your preference.

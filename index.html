@@ -5,14 +5,592 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>State Manager Demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #eae866a1 0%, #964ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+
+    .demo-section {
+      padding: 30px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .demo-section:last-child {
+      border-bottom: none;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title::before {
+      content: '';
+      width: 4px;
+      height: 24px;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      border-radius: 2px;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn.secondary {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .btn.success {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+
+    .btn.warning {
+      background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    }
+
+    .state-display {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .state-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .state-item:last-child {
+      border-bottom: none;
+    }
+
+    .state-label {
+      font-weight: 600;
+      color: #555;
+    }
+
+    .state-value {
+      background: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 12px;
+      max-width: 300px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .todo-list {
+      background: white;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .todo-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      border-bottom: 1px solid #eee;
+      transition: background-color 0.2s ease;
+    }
+
+    .todo-item:hover {
+      background: #f8f9fa;
+    }
+
+    .todo-item:last-child {
+      border-bottom: none;
+    }
+
+    .todo-text {
+      flex: 1;
+      margin-right: 15px;
+    }
+
+    .todo-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-small {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .input-group input {
+      flex: 1;
+      padding: 12px;
+      border: 2px solid #eee;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: border-color 0.3s ease;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: #4facfe;
+    }
+
+    .performance-metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .metric {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .metric-value {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .metric-label {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    .log-container {
+      background: #1e1e1e;
+      color: #00ff00;
+      padding: 20px;
+      border-radius: 8px;
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 12px;
+      max-height: 200px;
+      overflow-y: auto;
+      margin-top: 20px;
+    }
+
+    .log-entry {
+      margin-bottom: 5px;
+      padding: 5px 0;
+      border-bottom: 1px solid #333;
+    }
+
+    .log-entry:last-child {
+      border-bottom: none;
+    }
+
+    .batch-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 60px;
+      height: 30px;
+      background: #ccc;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .toggle-switch.active {
+      background: #4facfe;
+    }
+
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 24px;
+      height: 24px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.3s ease;
+    }
+
+    .toggle-switch.active::after {
+      transform: translateX(30px);
+    }
+  </style>
 </head>
 
 <body>
-  <button id="change_states_a">Click to change A state</button>
-  <button id="change_states_b">Click to change b state</button>
-  <button id="change_states_c">Click to change c state</button>
-  <script src="./dist/state_manager.js"></script>
+  <div class="container">
+    <div class="header">
+      <h1>🚀 State Manager Demo</h1>
+      <p>Lightweight, efficient state management with reactive updates</p>
+    </div>
+
+    <!-- Counter Demo -->
+    <div class="demo-section">
+      <h2 class="section-title">Counter Demo</h2>
+      <div class="controls">
+        <button class="btn" onclick="increment()">➕ Increment</button>
+        <button class="btn secondary" onclick="decrement()">➖ Decrement</button>
+        <button class="btn success" onclick="resetCounter()">🔄 Reset</button>
+        <button class="btn warning" onclick="randomCounter()">🎲 Random</button>
+      </div>
+      <div class="state-display">
+        <div class="state-item">
+          <span class="state-label">Counter:</span>
+          <span class="state-value" id="counter-display">0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Management -->
+    <div class="demo-section">
+      <h2 class="section-title">User Management</h2>
+      <div class="controls">
+        <button class="btn" onclick="setUser('John')">👤 Set John</button>
+        <button class="btn secondary" onclick="setUser('Jane')">👤 Set Jane</button>
+        <button class="btn success" onclick="setUser('Admin')">👤 Set Admin</button>
+        <button class="btn warning" onclick="clearUser()">❌ Clear User</button>
+      </div>
+      <div class="state-display">
+        <div class="state-item">
+          <span class="state-label">Current User:</span>
+          <span class="state-value" id="user-display">None</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Todo List -->
+    <div class="demo-section">
+      <h2 class="section-title">Todo List</h2>
+      <div class="input-group">
+        <input type="text" id="todo-input" placeholder="Enter a new todo..." onkeypress="handleTodoKeyPress(event)">
+        <button class="btn success" onclick="addTodo()">➕ Add Todo</button>
+      </div>
+      <div class="todo-list" id="todo-list">
+        <!-- Todos will be populated here -->
+      </div>
+    </div>
+
+    <!-- Performance Demo -->
+    <div class="demo-section">
+      <h2 class="section-title">Performance Demo</h2>
+      <div class="batch-toggle">
+        <span>Batch Updates:</span>
+        <div class="toggle-switch" id="batch-toggle" onclick="toggleBatchUpdates()"></div>
+        <span id="batch-status">Disabled</span>
+      </div>
+      <div class="controls">
+        <button class="btn" onclick="performanceTest(100)">⚡ Test 100 Updates</button>
+        <button class="btn secondary" onclick="performanceTest(1000)">⚡ Test 1000 Updates</button>
+        <button class="btn success" onclick="performanceTest(5000)">⚡ Test 5000 Updates</button>
+      </div>
+      <div class="performance-metrics">
+        <div class="metric">
+          <div class="metric-value" id="update-count">0</div>
+          <div class="metric-label">Total Updates</div>
+        </div>
+        <div class="metric">
+          <div class="metric-value" id="last-time">0ms</div>
+          <div class="metric-label">Last Test Time</div>
+        </div>
+        <div class="metric">
+          <div class="metric-value" id="subscriber-count">0</div>
+          <div class="metric-label">Active Subscribers</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Event Log -->
+    <div class="demo-section">
+      <h2 class="section-title">Event Log</h2>
+      <div class="controls">
+        <button class="btn" onclick="clearLog()">🗑️ Clear Log</button>
+        <button class="btn secondary" onclick="toggleLogging()">📝 Toggle Logging</button>
+      </div>
+      <div class="log-container" id="event-log">
+        <div class="log-entry">🚀 State Manager initialized...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Import the built state manager -->
+  <script src="./dist/state_manager.umd.js"></script>
+  <script>
+    // Initialize the store
+    const { Store } = window.StateManager;
+
+    const initialState = {
+      count: 0,
+      user: null,
+      todos: [],
+      performanceData: []
+    };
+
+    const mutations = {
+      increment(state, data) {
+        return { count: state.count + (data || 1) };
+      },
+      decrement(state, data) {
+        return { count: state.count - (data || 1) };
+      },
+      setCount(state, count) {
+        return { count };
+      },
+      setUser(state, user) {
+        return { user };
+      },
+      addTodo(state, todo) {
+        return { todos: [...state.todos, { ...todo, id: Date.now() }] };
+      },
+      removeTodo(state, id) {
+        return { todos: state.todos.filter(todo => todo.id !== id) };
+      },
+      toggleTodo(state, id) {
+        return {
+          todos: state.todos.map(todo =>
+            todo.id === id ? { ...todo, done: !todo.done } : todo
+          )
+        };
+      },
+      addPerformanceData(state, data) {
+        return { performanceData: [...state.performanceData, data] };
+      }
+    };
+
+    // Create store with batch updates enabled
+    const store = new Store({
+      state: initialState,
+      mutations,
+      options: { batchUpdates: false }
+    });
+
+    // Logging functionality
+    let loggingEnabled = true;
+    const log = (message) => {
+      if (!loggingEnabled) return;
+      const logContainer = document.getElementById('event-log');
+      const logEntry = document.createElement('div');
+      logEntry.className = 'log-entry';
+      logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      logContainer.appendChild(logEntry);
+      logContainer.scrollTop = logContainer.scrollHeight;
+    };
+
+    // Subscribe to state changes
+    store.subscribe('count', (newValue) => {
+      document.getElementById('counter-display').textContent = newValue;
+      log(`Counter updated to: ${newValue}`);
+    });
+
+    store.subscribe('user', (newValue) => {
+      document.getElementById('user-display').textContent = newValue || 'None';
+      log(`User updated to: ${newValue || 'None'}`);
+    });
+
+    store.subscribe('todos', (newValue) => {
+      renderTodos(newValue);
+      log(`Todos updated: ${newValue.length} items`);
+    });
+
+    // Counter functions
+    function increment() {
+      store.commit('increment', 1);
+    }
+
+    function decrement() {
+      store.commit('decrement', 1);
+    }
+
+    function resetCounter() {
+      store.commit('setCount', 0);
+    }
+
+    function randomCounter() {
+      store.commit('setCount', Math.floor(Math.random() * 100));
+    }
+
+    // User functions
+    function setUser(name) {
+      store.commit('setUser', name);
+    }
+
+    function clearUser() {
+      store.commit('setUser', null);
+    }
+
+    // Todo functions
+    function addTodo() {
+      const input = document.getElementById('todo-input');
+      const text = input.value.trim();
+      if (text) {
+        store.commit('addTodo', { text, done: false });
+        input.value = '';
+      }
+    }
+
+    function handleTodoKeyPress(event) {
+      if (event.key === 'Enter') {
+        addTodo();
+      }
+    }
+
+    function removeTodo(id) {
+      store.commit('removeTodo', id);
+    }
+
+    function toggleTodo(id) {
+      store.commit('toggleTodo', id);
+    }
+
+    function renderTodos(todos) {
+      const todoList = document.getElementById('todo-list');
+      todoList.innerHTML = todos.length === 0
+        ? '<div style="padding: 20px; text-align: center; color: #666;">No todos yet. Add one above!</div>'
+        : todos.map(todo => `
+            <div class="todo-item">
+              <div class="todo-text" style="text-decoration: ${todo.done ? 'line-through' : 'none'}; color: ${todo.done ? '#666' : '#333'};">
+                ${todo.text}
+              </div>
+              <div class="todo-actions">
+                <button class="btn btn-small ${todo.done ? 'warning' : 'success'}" onclick="toggleTodo(${todo.id})">
+                  ${todo.done ? '↩️ Undo' : '✅ Done'}
+                </button>
+                <button class="btn btn-small secondary" onclick="removeTodo(${todo.id})">
+                  🗑️ Remove
+                </button>
+              </div>
+            </div>
+          `).join('');
+    }
+
+    // Performance functions
+    function toggleBatchUpdates() {
+      const toggle = document.getElementById('batch-toggle');
+      const status = document.getElementById('batch-status');
+      const isActive = toggle.classList.contains('active');
+
+      if (isActive) {
+        toggle.classList.remove('active');
+        status.textContent = 'Disabled';
+        store.setBatchUpdates(false);
+        log('Batch updates disabled');
+      } else {
+        toggle.classList.add('active');
+        status.textContent = 'Enabled';
+        store.setBatchUpdates(true);
+        log('Batch updates enabled');
+      }
+    }
+
+    function performanceTest(count) {
+      const start = performance.now();
+
+      for (let i = 0; i < count; i++) {
+        store.state.performanceData = [...store.state.performanceData, { id: i, timestamp: Date.now() }];
+      }
+
+      if (store.batchUpdates) {
+        store.flushBatchUpdates();
+      }
+
+      const end = performance.now();
+      const time = Math.round(end - start);
+
+      document.getElementById('update-count').textContent = count;
+      document.getElementById('last-time').textContent = `${time}ms`;
+      document.getElementById('subscriber-count').textContent = store.getSubscriberCount('performanceData');
+
+      log(`Performance test: ${count} updates in ${time}ms`);
+    }
+
+    // Log functions
+    function clearLog() {
+      document.getElementById('event-log').innerHTML = '<div class="log-entry">🚀 Log cleared...</div>';
+    }
+
+    function toggleLogging() {
+      loggingEnabled = !loggingEnabled;
+      log(`Logging ${loggingEnabled ? 'enabled' : 'disabled'}`);
+    }
+
+    // Initialize the demo
+    log('🚀 State Manager Demo initialized');
+    log('💡 Try clicking the buttons above to see reactive updates');
+    log('⚡ Test performance with different batch settings');
+  </script>
 </body>
 
 </html>

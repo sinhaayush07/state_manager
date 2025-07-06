@@ -1,29 +1,50 @@
 {
-    "name": "state_manager",
-    "sideEffects": false,
-    "version": "1.0.0",
-    "description": "This is a lightweigh store for state manangement",
-    "private": true,
-    "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1",
-      "watch": "webpack --watch",
-      "build": "webpack"
-    },
-    "keywords": [],
-    "author": "Ayush Sinha",
-    "license": "MIT",
-    "dependencies": {
-      "npm": "^6.13.0"
-    },
-    "devDependencies": {
-      "clean-webpack-plugin": "^0.1.19",
-      "uglifyjs-webpack-plugin": "^2.0.1",
-      "webpack": "^4.22.0",
-      "webpack-bundle-analyzer": "^4.5.0",
-      "webpack-cli": "^3.1.2",
-      "webpack-dev-server": "^3.11.0",
-      "webpack-merge": "^4.1.4",
-      "webpack-obfuscator": "^0.18.0"
+  "name": "state_manager",
+  "sideEffects": false,
+  "version": "1.0.0",
+  "description": "This is a lightweigh store for state manangement",
+  "private": false,
+  "main": "dist/state_manager.cjs.js",
+  "module": "dist/state_manager.esm.js",
+  "unpkg": "dist/state_manager.umd.js",
+  "jsdelivr": "dist/state_manager.umd.js",
+  "exports": {
+    ".": {
+      "import": "./dist/state_manager.esm.js",
+      "require": "./dist/state_manager.cjs.js",
+      "default": "./dist/state_manager.umd.js"
     }
+  },
+  "files": [
+    "dist",
+    "store"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "webpack --watch",
+    "build": "webpack",
+    "clean": "rm -rf dist",
+    "prebuild": "npm run clean"
+  },
+  "keywords": [
+    "state-management",
+    "store",
+    "pubsub",
+    "reactive"
+  ],
+  "author": "Ayush Sinha",
+  "license": "MIT",
+  "dependencies": {
+    "npm": "^6.13.0"
+  },
+  "devDependencies": {
+    "clean-webpack-plugin": "^0.1.19",
+    "uglifyjs-webpack-plugin": "^2.0.1",
+    "webpack": "^4.22.0",
+    "webpack-bundle-analyzer": "^4.5.0",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.11.0",
+    "webpack-merge": "^4.1.4",
+    "webpack-obfuscator": "^0.18.0"
   }
-  
+}

@@ -15,7 +15,6 @@ export class Store {
       if (a === b) return true
       if (a == null || b == null) return false
       if (typeof a !== typeof b) return false
-
       if (typeof a === 'object') {
         if (Array.isArray(a) !== Array.isArray(b)) return false
         if (Array.isArray(a)) {
@@ -25,7 +24,6 @@ export class Store {
           }
           return true
         }
-
         const keysA = Object.keys(a)
         const keysB = Object.keys(b)
         if (keysA.length !== keysB.length) return false
@@ -35,7 +33,6 @@ export class Store {
         }
         return true
       }
-
       return false
     }
 
@@ -62,7 +59,6 @@ export class Store {
 
         return true
       },
-
       get: function (target, property) {
         if (!target.hasOwnProperty(property)) {
           return undefined // Return undefined instead of string for better error handling
@@ -99,15 +95,12 @@ export class Store {
       console.warn(`Mutation '${key}' does not exist`)
       return false
     }
-
     try {
       const newState = this.mutations[key](this.state, data)
-
       if (newState && typeof newState === 'object') {
         // Use Object.assign to trigger proxy setters
         Object.assign(this.state, newState)
       }
-
       return true
     } catch (error) {
       console.error(`Error in mutation '${key}':`, error)

@@ -1,7 +1,7 @@
 {
   "name": "state_manager",
   "sideEffects": false,
-  "version": "2.0.0",
+  "version": "1.0.0",
   "description": "This is a lightweigh store for state manangement",
   "private": false,
   "main": "dist/state_manager.cjs.js",

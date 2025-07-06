@@ -1,6 +1,8 @@
 # State Manager
 A simple light weight javaScript library for State Management.
 
+## Demo - https://sinhaayush07.github.io/state_manager/
+
 ## Installation
 
 ```bash
